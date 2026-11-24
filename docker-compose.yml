@@ -1,0 +1,61 @@
+# ============================================================================
+# HESABIYAR — Production stack
+#   web      : Next.js app (this repo)        → published on :3000
+#   realtime : socket.io mini-service         → internal :3030 (not published;
+#              must be reached through the web app's gateway / reverse proxy)
+# ============================================================================
+
+name: hesabyar
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.production
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+      # Where the API pushes live notification events (realtime control plane).
+      REALTIME_INTERNAL_URL: http://realtime:3031
+    volumes:
+      # SQLite database + auto backups (db/custom.db, db/backups/)
+      - ./db:/app/db
+    depends_on:
+      realtime:
+        condition: service_started
+    restart: unless-stopped
+    healthcheck:
+      # oven/bun:1-slim ships neither curl nor wget — use bun's fetch instead.
+      test:
+        [
+          "CMD",
+          "bun",
+          "-e",
+          "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  realtime:
+    build:
+      context: ./mini-services/realtime-service
+    # Internal only — never published to the host. Browsers reach :3030 through
+    # the web app's gateway (XTransformPort pattern or direct ws proxy); `web`
+    # pushes events to the control plane on :3031.
+    expose:
+      - "3030"
+      - "3031"
+    env_file:
+      - .env.production
+    environment:
+      NODE_ENV: production
+      PORT: 3030
+      REALTIME_CONTROL_PORT: 3031
+    restart: unless-stopped
