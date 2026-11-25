@@ -2,7 +2,7 @@
 
 All suites run against the live dev server (`bun tests/p<id>-<name>.mjs`, dev on :3000) and use shared discipline: authenticated sessions, per-route fair-rate budgets with 429-aware retry (retries do not burn the budget), global mutation pacing (~2.1s), empty-code selectors to minimize blind probing, watermark assertions for window-independent fan-out checks, and cross-run residue self-healing.
 
-## Verified pass counts (Phase 29 serial regression, exit 0)
+## Verified pass counts (Phase 30 serial regression, exit 0)
 
 | Suite | Scope | Checks |
 | --- | --- | --- |
@@ -17,7 +17,8 @@ All suites run against the live dev server (`bun tests/p<id>-<name>.mjs`, dev on
 | `p33-lifecycle-e2e.mjs` | Retention policies + sweeps | 93 |
 | `p34-import-e2e.mjs` | Governed bulk import dry-run→commit | 97 |
 | `p35-performance-e2e.mjs` | FK coverage audit + EXPLAIN QUERY PLAN + latency telemetry | 58 |
-| **Total** | | **1,057** |
+| `p36-audit-chain-e2e.mjs` | Tamper-evident ledger: independent chain walk, tamper-detection proof, seals, race zero-drop | 63 |
+| **Total** | | **1,120** |
 
 ## Older suites (all green at their delivery; still part of the full regression pool)
 
@@ -44,4 +45,4 @@ All suites run against the live dev server (`bun tests/p<id>-<name>.mjs`, dev on
 | `p23-hr-insurance-e2e.mjs` | HR + insurance |
 | `p24-costcenters-e2e.mjs` | Cost centers + tagging |
 
-~17,300 lines of test code total. Every delivered feature also carries RTL fa / en / 390px mobile browser-verification screenshots in `tests/` (binary evidence — local-only in the GitHub mirror, listed in `docs/REPO-MANIFEST-*.txt`).
+~17,500 lines of test code total. Every delivered feature also carries RTL fa / en / 390px mobile browser-verification screenshots in `tests/` (binary evidence — local-only in the GitHub mirror, listed in `docs/REPO-MANIFEST-*.txt`).

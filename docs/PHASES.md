@@ -1,8 +1,8 @@
 # Hesabyar — Delivery Log | گزارش تحویل فازها
 
-29 delivery phases, one protocol: **implement (full detail) → deep test → identify & fix bugs → deliver report → propose next phase**.
+30 delivery phases, one protocol: **implement (full detail) → deep test → identify & fix bugs → deliver report → propose next phase**.
 
-> Suite naming: from Phase 25 onward the deep-test suite for Phase *N* is `tests/p{N+6}-*.mjs` (p31=Phase 25 … p35=Phase 29). Earlier suites predate that convention; the table lists the suite that carries each delivery's evidence.
+> Suite naming: from Phase 25 onward the deep-test suite for Phase *N* is `tests/p{N+6}-*.mjs` (p31=Phase 25 … p36=Phase 30). Earlier suites predate that convention; the table lists the suite that carries each delivery's evidence.
 
 | Phase | Delivery | Deep-test evidence |
 | --- | --- | --- |
@@ -34,11 +34,12 @@
 | 27 | Data lifecycle & retention governance (policies, sweeps, archive batches) — `2.27.0-phase27-v3` | `tests/p33-lifecycle-e2e.mjs` |
 | 28 | Governed bulk import (dry-run→commit digests, per-row isolation, once-only commits) — `2.28.0-phase28-v3` | `tests/p34-import-e2e.mjs` |
 | 29 | Performance & scale sweep: FK index coverage (34 new indexes, zero audit gaps), route-latency telemetry (p50/p95/max + error counters in `/api/system/metrics`), Operations console latency table — `2.29.0-phase29-v3` | `tests/p35-performance-e2e.mjs` |
+| 30 | **Tamper-Evident Audit Ledger** — SHA-256 hash chain over the append-only audit log (seq + prevHash + row hash), one-time legacy backfill to 100% coverage, cryptographic `AuditCheckpoint` seals that refuse broken chains, admin API (`/api/audit/chain{,/verify,/checkpoint,/backfill}`), Operations console integrity card; bugs found & fixed: audit-row loss under concurrent appends (UNIQUE(seq) P2002 escaped the retry predicate → `retryOn: isUniqueViolation`), telemetry starvation after 64-family saturation (silent drop → honest eviction), p35 exact-count pin → monotonic floor — `2.30.0-phase30-v3` | `tests/p36-audit-chain-e2e.mjs` |
 
-## Verified regression baseline (end of Phase 29)
+## Verified regression baseline (end of Phase 30)
 
-Serial re-run, all green: p25=112, p26=71, p27=145, p28=89, p29=117, p30=115, p31=119, p32=41, p33=93, p34=97 → **999 checks**, plus p35=**58** → **1,057 total**, exit 0. Lint + typecheck clean.
+Serial re-run, all green: p25=112, p26=71, p27=145, p28=89, p29=117, p30=115, p31=119, p32=41, p33=93, p34=97, p35=58 → **1,057 checks**, plus p36=**63** → **1,120 total**, exit 0. Lint + typecheck clean.
 
 ## Next
 
-- **Phase 30 — Tamper-Evident Audit Ledger** (SHA-256 hash chain over the append-only audit log, checkpoints, machine-verified integrity + tamper-detection proof), version target `2.30.0-phase30-v3`, suite `tests/p36-audit-chain-e2e.mjs`.
+- **Phase 31** — proposed in the Phase 30 delivery report (options: session/security sweep, reporting & export polish, or mobile-PWA/offline readiness). Version target `2.31.0-phase31-v3`, suite `tests/p37-*-e2e.mjs`.
