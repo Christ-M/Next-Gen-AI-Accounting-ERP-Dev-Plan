@@ -10,7 +10,7 @@ export const APP = {
   taglineEn: 'Advanced Accounting Platform',
   taglineFa: 'پلتفرم حسابداری پیشرفته',
   /** Bumped per delivery phase — surfaced in the footer + /api/health */
-  version: '2.29.0-phase29-v3',
+  version: '2.30.0-phase30-v3',
 } as const;
 
 export const AUTH = {
